@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+backend/.venv/
+.env
+.env.*
+!.env.example
+.DS_Store
+dist/
+*.tar.gz
+data/*.sqlite3
+data/*.sqlite3-*

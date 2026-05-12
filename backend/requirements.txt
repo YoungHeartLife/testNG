@@ -1,0 +1,3 @@
+# Pure-backend scanner uses Python stdlib + SQLite.
+# Optional: install AkShare to fetch live A-share snapshots instead of demo data.
+akshare==1.15.78
