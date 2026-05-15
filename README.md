@@ -11,6 +11,7 @@
 - 大盘环境监控：上涨家数、下跌家数、涨停数量、跌停数量、炸板率、AI 风险等级、是否允许开仓。
 - AI 选股系统：基于第一阶段手动规则因子扫描近期涨停、放量长上影、缩量抗跌、横盘突破、一进二。
 - AI 提示系统：根据市场环境和风控规则生成可解释交易提示。
+- 今日交易报告：整合官方/主流财经新闻风险、Tushare 候选数据（可选）、重点股票池、持仓分析、执行清单与 PushPlus 微信推送。
 - Web 实时页面：Next.js 页面展示市场环境、AI 选股池、风险提示，并通过 WebSocket 定时刷新。
 - Docker 本地部署：包含 frontend、backend、redis、postgres、nginx。
 
@@ -79,9 +80,22 @@ GET /api/dashboard
 WS /ws/realtime
 ```
 
+### 今日交易报告与微信推送
+
+```http
+GET /api/report/today
+POST /api/report/push
+```
+
+可选环境变量：
+
+- `PUSHPLUS_TOKEN`：PushPlus 微信推送 Token。
+- `TUSHARE_TOKEN`：启用 Tushare 候选股票数据适配；未配置时使用内置演示股票池。
+- `HOLDINGS_JSON` / `HOLDINGS_FILE`：接入持仓后生成持仓股票交易信息。
+
 ## 数据源说明
 
-后端优先使用 AkShare 获取 A 股快照；如果本地未安装或容器尚未联网，会自动使用内置演示数据，保证 MVP 可启动、可演示、可复盘。
+后端优先使用 AkShare 获取 A 股快照；选股模块可在配置 `TUSHARE_TOKEN` 后读取 Tushare 日线/基础数据构造候选池；如果本地未安装、未配置 Token 或容器尚未联网，会自动使用内置演示数据，保证 MVP 可启动、可演示、可复盘。
 
 ## 目录结构
 

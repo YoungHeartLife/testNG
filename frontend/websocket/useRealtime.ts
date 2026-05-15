@@ -31,7 +31,46 @@ export type DashboardPayload = {
   }
 }
 
-const apiBase = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000'
+export type DailyTradingReport = {
+  title: string
+  market: MarketStatus
+  strategy: {
+    action_level: 'buy_allowed' | 'no_buy' | 'half_position' | 'clear_all'
+    action_title: string
+    position_hint: string
+    buy_window: string
+    hard_rules: string[]
+    risk_warnings: string[]
+    execution_checklist: string[]
+  }
+  news: {
+    summary: string
+    risk_level: string
+    official_sources: string[]
+    items: Array<{
+      title: string
+      source: string
+      published_at: string
+      risk_hint: string
+      url?: string | null
+    }>
+  }
+  selector: StockSignal[]
+  stock_trade_notes: Array<Record<string, unknown>>
+  holdings: {
+    items: Array<{
+      stock: string
+      name: string
+      pnl_pct: number
+      action: string
+      reason: string
+      stop_loss: string
+    }>
+  }
+  html: string
+}
+
+export const apiBase = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:8000'
 const wsBase = process.env.NEXT_PUBLIC_WS_BASE || 'ws://localhost:8000'
 
 export function useRealtimeDashboard() {

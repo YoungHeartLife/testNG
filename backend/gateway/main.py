@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.ai.agents.prompt_agent import build_ai_prompt
 from backend.services.market_service.service import get_market_status
 from backend.services.selector_service.service import scan_stocks
+from backend.services.report_service import build_daily_report, push_daily_report
 
 app = FastAPI(title="AI 情绪交易系统 MVP", version="0.1.0")
 
@@ -55,6 +56,16 @@ def ai_signals() -> dict[str, object]:
 @app.get("/api/dashboard")
 def dashboard() -> dict[str, object]:
     return dashboard_payload()
+
+
+@app.get("/api/report/today")
+def today_report() -> dict[str, object]:
+    return build_daily_report().model_dump(mode="json")
+
+
+@app.post("/api/report/push")
+def push_report() -> dict[str, object]:
+    return push_daily_report()
 
 
 @app.websocket("/ws/realtime")
