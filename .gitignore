@@ -11,3 +11,5 @@ out/
 .DS_Store
 dist/
 *.tar.gz
+reports/
+frontend/node_modules/

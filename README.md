@@ -98,3 +98,35 @@ docs/                     设计文档
 ## 风险声明
 
 本项目仅用于本地研究、辅助决策与软件开发演示，不构成任何投资建议。实盘交易前必须由人工验证交易逻辑、数据质量、风控规则和合规要求。
+
+## 每日股票 AI 研究自动化
+
+本仓库新增了一个独立的 Python 自动化流程，可由 GitHub Actions 每个交易日触发：
+
+```text
+股票数据源 → Python 获取行情 → 计算技术指标 → 整理数据 → 调用多个 AI 模型 → 综合模型结果 → 生成 Markdown/HTML 报告 → Email 发送 → 次日继续执行
+```
+
+### 本地运行
+
+```bash
+python -m pytest -q
+python -m stock_research.main
+```
+
+默认会研究 `AAPL,MSFT,NVDA`，并在 `reports/` 下生成 `daily_stock_report.md` 与 `daily_stock_report.html`。可通过环境变量调整：
+
+- `STOCK_SYMBOLS`：逗号分隔股票代码，例如 `AAPL,MSFT,NVDA`。
+- `LOOKBACK_DAYS`：拉取的历史交易日数量，默认 `120`。
+- `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `GEMINI_API_KEY`：配置后启用对应模型；未配置时使用本地规则分析兜底。
+- `EMAIL_ENABLED=true`：启用邮件发送。
+- `EMAIL_TO`、`EMAIL_FROM`、`SMTP_HOST`、`SMTP_PORT`、`SMTP_USERNAME`、`SMTP_PASSWORD`：SMTP 邮件配置。
+
+### GitHub Actions 配置
+
+工作流文件位于 `.github/workflows/daily-stock-research.yml`，默认在 UTC 时间周一到周五 12:30 运行，也支持手动触发。建议在 GitHub 仓库中配置：
+
+- Repository Variables：`STOCK_SYMBOLS`、`LOOKBACK_DAYS`、`EMAIL_ENABLED`。
+- Repository Secrets：AI API Key 与 SMTP 账号密码。
+
+生成的报告会作为 `daily-stock-report` artifact 保存；如果启用 SMTP，也会自动发送到手机邮箱。
